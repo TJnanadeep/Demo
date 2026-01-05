@@ -11,6 +11,8 @@ This script demonstrates common Python programming concepts including:
 
 import sys
 import json
+import os
+import tempfile
 from datetime import datetime
 
 
@@ -177,7 +179,7 @@ def main():
     
     # Demonstrate file operations
     print("5. File operations:")
-    test_filename = "/tmp/sample_output.json"
+    test_filename = os.path.join(tempfile.gettempdir(), "sample_output.json")
     save_to_file(processed, test_filename)
     read_data = read_from_file(test_filename)
     if read_data:
