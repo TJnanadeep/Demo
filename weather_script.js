@@ -1,8 +1,16 @@
 // Weather App JavaScript
 // Using OpenWeatherMap API
 
+// Note: This is a demo API key with limited usage. For production use, 
+// implement a backend proxy to securely handle API requests
 const API_KEY = 'fe88e1e059e20be152bd5943379fa6c7'; // Demo API key
 const API_BASE_URL = 'https://api.openweathermap.org/data/2.5';
+
+// Constants for better code maintainability
+const METERS_PER_SEC_TO_KM_PER_HOUR = 3.6;
+const ERROR_DISPLAY_DURATION = 5000; // milliseconds
+const NOON_TIME = '12:00:00'; // Time to sample for daily forecast
+const FORECAST_DAYS = 5; // Number of days to show in forecast
 
 // DOM Elements
 const cityInput = document.getElementById('cityInput');
@@ -144,7 +152,7 @@ function displayWeather(currentWeather, forecastData) {
 
     // Update weather details
     document.getElementById('windSpeed').textContent = 
-        `${Math.round(currentWeather.wind.speed * 3.6)} km/h`;
+        `${Math.round(currentWeather.wind.speed * METERS_PER_SEC_TO_KM_PER_HOUR)} km/h`;
     document.getElementById('humidity').textContent = 
         `${currentWeather.main.humidity}%`;
     document.getElementById('feelsLike').textContent = 
@@ -174,10 +182,10 @@ function displayForecast(forecastData) {
     const forecastContainer = document.getElementById('forecast');
     forecastContainer.innerHTML = '';
 
-    // Get one forecast per day (at 12:00)
+    // Get one forecast per day at noon (12:00) for consistent daily temperature
     const dailyForecasts = forecastData.list.filter(item => 
-        item.dt_txt.includes('12:00:00')
-    ).slice(0, 5);
+        item.dt_txt.includes(NOON_TIME)
+    ).slice(0, FORECAST_DAYS);
 
     dailyForecasts.forEach(forecast => {
         const date = new Date(forecast.dt * 1000);
@@ -213,7 +221,7 @@ function showError(message) {
     errorMessage.classList.add('show');
     setTimeout(() => {
         hideError();
-    }, 5000);
+    }, ERROR_DISPLAY_DURATION);
 }
 
 // Hide error message
